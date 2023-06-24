@@ -14,7 +14,9 @@ import { Product } from 'src/app/models/product';
 export class ListComponent implements OnInit, OnDestroy {
   filterForm: FormControl;
   subscriptions = new Subscription();
-  itemsList: (Customer | Product )[] = []
+  itemsList: (Customer | Product )[] = [];
+  listData: (Customer | Product )[] = []
+  searchedInput: RegExp
 
   constructor(
     private MockDataService: MockDataService,
@@ -24,7 +26,8 @@ export class ListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm()
     this.MockDataService.getData().subscribe((data) => {
-      this.itemsList = data
+      this.listData = data
+      this.itemsList = this.listData
     })
   }
 
@@ -46,6 +49,24 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   onFilterChange(inputSearched: string) {
+    if (inputSearched) {
+      this.searchedInput = new RegExp(inputSearched, "i")
+      
+      this.itemsList = this.listData.filter((item) => {
+        return this.checkSearchMatch(item, this.searchedInput)
+      })
+    } else {
+      this.itemsList = this.listData
+    }
+  }
 
+  checkSearchMatch(item: Customer | Product, input: RegExp): RegExpMatchArray | null {
+    if ('premium' in item && item.premium) {
+      return null
+    } else if ('price' in item) {
+      return item.name.match(input) || item.price.toFixed(2).match(input)
+    } else {
+      return item.name.match(input)
+    }
   }
 }
