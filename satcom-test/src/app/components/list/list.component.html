@@ -10,6 +10,7 @@
     <li 
       class="list-element"
       *ngFor="let item of itemsList"
+      (click)="showElement(item)"
     >
       {{ item.name }}
     </li>

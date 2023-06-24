@@ -1,3 +1,4 @@
+import { ComponentService } from './../../services/component.service';
 import {Component, ComponentRef, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import {Subscription} from "rxjs";
 import {CustomerComponent} from "../customer/customer.component";
@@ -16,9 +17,15 @@ export class ViewerComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   currentComponent: ComponentRef<CustomerComponent | PremiumProductComponent | ProductComponent>;
 
-  constructor(private viewContainerRef: ViewContainerRef) { }
+  constructor(
+    private viewContainerRef: ViewContainerRef,
+    private ComponentService: ComponentService  
+  ) { }
 
   ngOnInit(): void {
+    this.ComponentService.currentComponent.subscribe((element) => {
+      this.addDetailsComponentToView(element)
+    })
   }
 
   ngOnDestroy(): void {

@@ -1,3 +1,4 @@
+import { ComponentService } from './../../services/component.service';
 import { MockDataService } from './../../services/mock-data.service';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
@@ -15,9 +16,10 @@ export class ListComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   itemsList: (Customer | Product )[] = []
 
-  constructor(private MockDataService: MockDataService) {
-
-  }
+  constructor(
+    private MockDataService: MockDataService,
+    private ComponentService: ComponentService  
+  ) { }
 
   ngOnInit(): void {
     this.initForm()
@@ -28,6 +30,10 @@ export class ListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  showElement(element:  Product | Customer) {
+    this.ComponentService.setComponent(element)
   }
 
   initForm(): void {
